@@ -3,5 +3,5 @@
 set -e
 set -x
 
-apt-get install -y puppetmaster augeas-tools facter mcollective rsync
+apt-get install -y puppetmaster
 puppet apply /vagrant/src/puppet/puppetmaster-setup.pp
