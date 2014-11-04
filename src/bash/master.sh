@@ -3,5 +3,5 @@
 set -e
 set -x
 
-apt-get install -y puppetmaster
-puppet apply /vagrant/src/puppet/puppetmaster-setup.pp
+apt-get install -y puppetmaster ruby
+puppet apply /vagrant/site/profile/manifests/master/setup.pp
