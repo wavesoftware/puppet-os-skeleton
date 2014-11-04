@@ -6,6 +6,8 @@ Vagrant.configure("2") do |config|
 
   $masterhost = "master.localdomain"
 
+  config.vm.network "private_network", type: "dhcp"
+
   config.vm.define "master" do |master|
     master.vm.provision "shell", path: "src/bash/master.sh"
     master.vm.hostname = $masterhost

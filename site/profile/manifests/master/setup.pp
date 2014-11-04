@@ -15,30 +15,38 @@ file { '/etc/r10k.yaml':
 
 exec { 'r10k deploy environment -v':
   path        => $::path,
-  require     => [
+  refreshonly => true,
+  subscribe   => [
     File['/etc/r10k.yaml'],
     Package['r10k'],
     Augeas['/etc/puppet/puppet.conf'],
-    File['/etc/puppet/hiera.yaml'],
-    File['/etc/hiera.yaml'],
+    File['/etc/puppet/hiera.conf'],
+    File['/etc/hiera.conf'],
   ],
 }
 
 augeas { '/etc/puppet/puppet.conf':
-  context => '/files//etc/puppet/puppet.conf',
+  context => '/files/etc/puppet/puppet.conf',
   changes => [
     'set main/show_diff true',
-    "set main/server ${::fqdn}",
+    "set agent/server ${::fqdn}",
+    'set agent/classfile $vardir/classes.txt',
+    'set agent/localconfig $vardir/localconfig',
   ],
 }
 
-
-file { '/etc/puppet/hiera.yaml':
-  ensure => 'file',
-  source => '/vagrant/src/hiera.yaml',
+service { 'puppetmaster':
+  ensure    => 'running',
+  enable    => true,
+  subscribe => Augeas['/etc/puppet/puppet.conf'],
 }
 
-file { '/etc/hiera.yaml':
+file { '/etc/puppet/hiera.conf':
+  ensure => 'file',
+  source => '/vagrant/src/hiera.conf',
+}
+
+file { '/etc/hiera.conf':
   ensure => 'link',
-  target => '/etc/puppet/hiera.yaml',
+  target => '/etc/puppet/hiera.conf',
 }
