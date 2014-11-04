@@ -4,7 +4,9 @@ Vagrant.configure("2") do |config|
   
   config.vm.box = "ubuntu/trusty64"
 
-  $masterhost = "master.localdomain"
+  masterhost = "master.localdomain"
+  branch     = `git rev-parse --abbrev-ref HEAD`.chop()
+  debug_flag = if ENV['PUPPET_VERBOSE'] == 'debug' then '--debug --trace' else '' end
 
   config.vm.network "private_network", type: "dhcp"
 
@@ -13,7 +15,8 @@ Vagrant.configure("2") do |config|
     master.vm.hostname = $masterhost
 
     master.vm.provision "puppet_server" do |puppet|
-      puppet.puppet_server = $masterhost
+      puppet.puppet_server = masterhost
+      puppet.options = "--environment '#{branch}' #{debug_flag}"
     end
   end
 
@@ -22,7 +25,8 @@ Vagrant.configure("2") do |config|
     slave.vm.hostname = "slave.localdomain"
 
     slave.vm.provision "puppet_server" do |puppet|
-      puppet.puppet_server = $masterhost
+      puppet.puppet_server = masterhost
+      puppet.options = "--environment '#{branch}' #{debug_flag}"
     end
   end
 
