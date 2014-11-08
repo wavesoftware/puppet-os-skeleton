@@ -60,15 +60,10 @@ class profile::master::setup {
   }
 
   exec { "dpkg -iv $debpath && apt-get update":
-    alias   => 'install-and-update-os'
-    unless  => 'dpkg -l | grep -q \'ii  time\''
+    alias   => 'install-and-update-os',
+    unless  => 'dpkg -l | grep -q \'ii  time\'',
     require => Exec["wget https://apt.puppetlabs.com/${deb}"],
   }
-
-  Class[profile::master::setup] ~> Class[puppetdb::server]
-
-  include puppetdb 
-  include puppetdb::master::config
 
   service { 'puppetmaster':
     ensure     => 'running',
