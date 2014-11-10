@@ -2,26 +2,40 @@
 
 class profile::master::setup {
 
-  package { 'git': ensure => 'installed', }
+  if ! $::repopath {
+    fail('Set $::repopath facter value!')
+  }
 
-  package { ['r10k', 'librarian-puppet']:
+  package { 'git': 
+    ensure => 'installed', 
+  }
+
+  package { 'r10k':
     ensure   => 'installed',
     provider => 'gem',
     require  => Package['git'],
   }
 
   Exec {
-    path => $::path,
+    path      => $::path,
+    logoutput => true,
   }
 
   file { '/etc/r10k.yaml':
     ensure  => 'file',
-    source  => '/vagrant/src/r10k.yaml',
+    source  => "${::repopath}/src/r10k.yaml",
   }
 
-  exec { 'r10k deploy environment -v':
+  exec { 'git add -A && git write-tree > /etc/puppet/repo.hash':
+    alias  => 'check-input-repo',
+    cwd    => $::repopath,
+    onlyif => '[ ! -f /etc/puppet/repo.hash ] || test `git add -A && git write-tree` != `cat /etc/puppet/repo.hash`'
+  }
+
+  exec { 'r10k deploy environment -p -v':
     refreshonly => true,
     subscribe   => [
+      Exec['check-input-repo'],
       File['/etc/r10k.yaml'],
       Package['r10k'],
       Augeas['/etc/puppet/puppet.conf'],
@@ -41,28 +55,11 @@ class profile::master::setup {
       'set main/modulepath /etc/puppet/environments/$environment/modules:/etc/puppet/environments/$environment/site',
       'set main/manifest /etc/puppet/environments/$environment/site.pp',
     ],
-    require => Exec['install-and-update-os'],
   }
 
   file { '/var/lib/puppet/state/agent_disabled.lock':
     ensure => 'absent',
     notify => Service['puppetmaster'],
-  }
-
-  $deb      = "puppetlabs-release-${::lsbdistcodename}"
-  $debfile  = "${deb}.deb"
-  $srcdir   = '/usr/src'
-  $debpath  = "${srcdir}${deb}"
-
-  exec { "wget https://apt.puppetlabs.com/${deb}":
-    cwd     => $srcdir,
-    creates => $debpath,
-  }
-
-  exec { "dpkg -iv $debpath && apt-get update":
-    alias   => 'install-and-update-os',
-    unless  => 'dpkg -l | grep -q \'ii  time\'',
-    require => Exec["wget https://apt.puppetlabs.com/${deb}"],
   }
 
   service { 'puppetmaster':
@@ -75,7 +72,7 @@ class profile::master::setup {
 
   file { '/etc/puppet/hiera.yaml':
     ensure => 'file',
-    source => '/vagrant/src/hiera.yaml',
+    source => "${::repopath}/src/hiera.yaml",
   }
 
   file { '/etc/hiera.yaml':
