@@ -7,8 +7,8 @@ Vagrant.configure("2") do |config|
   masterhost  = "master.localdomain"
   branch      = `git rev-parse --abbrev-ref HEAD`.chop()
   environment = branch.gsub /[^0-9A-Za-z]/, '_'
-  debug_flag  = if ENV['PUPPET_VERBOSE'] == 'debug' then '--debug --trace' else '' end
-  args        = [ '/vagrant', environment ]
+  debug_flag  = if ENV['PUPPET_VERBOSE'] != '' then '--debug --trace' else '' end
+  args        = [ '/vagrant', environment, masterhost ]
 
   config.vm.network "private_network", type: "dhcp"
   config.landrush.enabled = true
