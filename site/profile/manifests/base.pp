@@ -3,4 +3,5 @@ class profile::base {
   include common::filebucket
   include common::puppet::agent
   include common::packages
+  include common::prompt
 }
