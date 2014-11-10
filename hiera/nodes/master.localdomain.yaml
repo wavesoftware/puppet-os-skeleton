@@ -5,5 +5,10 @@ classes:
   - 'puppetdb'
   - 'puppetdb::master::config'
   - 'puppetboard'
+  - 'puppetboard::apache::vhost'
+  - 'apache'
+  - 'apache::mod::wsgi'
 
 puppetboard::manage_virtualenv: true
+puppetboard::apache::vhost::vhost_name: "%{fqdn}"
+puppetboard::apache::vhost::port: 80

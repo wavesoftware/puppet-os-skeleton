@@ -15,6 +15,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "master" do |master|
     master.vm.provision "shell", path: "src/bash/master.sh", args: args
+    master.vm.provision "shell", path: "src/bash/master-autosign.sh"
     master.vm.hostname = masterhost
 
     master.vm.provider "virtualbox" do |v|
@@ -28,13 +29,63 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.define "slave" do |slave|
+  config.vm.define "slave1" do |slave|
     slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
-    slave.vm.hostname = "slave.localdomain"
+    slave.vm.hostname = "slave1.localdomain"
 
     slave.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost
       puppet.options = "-t --environment '#{environment}' #{debug_flag}"
+    end
+
+    slave.vm.provider "virtualbox" do |v|
+      v.memory = 256
+      v.cpus = 1
+    end
+  end
+
+  config.vm.define "slave2" do |slave|
+    slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
+    slave.vm.hostname = "slave2.localdomain"
+
+    slave.vm.provision "puppet_server" do |puppet|
+      puppet.puppet_server = masterhost
+      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
+    end
+
+    slave.vm.provider "virtualbox" do |v|
+      v.memory = 256
+      v.cpus = 1
+    end
+  end
+
+  config.vm.define "slave3" do |slave|
+    slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
+    slave.vm.hostname = "slave3.localdomain"
+
+    slave.vm.provision "puppet_server" do |puppet|
+      puppet.puppet_server = masterhost
+      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
+    end
+
+    slave.vm.provider "virtualbox" do |v|
+      v.memory = 256
+      v.cpus = 1
+    end
+  end
+
+  config.vm.define "slave4" do |slave|
+    slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
+    slave.vm.hostname = "slave4.localdomain"
+
+    slave.vm.provision "puppet_server" do |puppet|
+      puppet.puppet_server = masterhost
+      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
+    end
+
+    slave.vm.provider "virtualbox" do |v|
+      v.memory = 256
+      v.cpus = 1
     end
   end
 
