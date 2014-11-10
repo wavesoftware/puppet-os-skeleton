@@ -2,6 +2,13 @@
 classes:
  - profile::base
 
+packages:
+ - htop
+ - sysstat
+ - tcpdump
+ - iotop
+ - git
+
 ntp::servers:
   - 0.us.pool.ntp.org
   - 1.us.pool.ntp.org

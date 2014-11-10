@@ -1,4 +1,3 @@
 #!/bin/bash
 
-puppet resource augeas puppet.conf context=/files/etc/puppet/puppet.conf changes='rm main/templatedir'
-puppet resource file '/var/lib/puppet/state/agent_disabled.lock' ensure=absent
+puppet apply ${FACTER_repopath}/src/puppet/fix-agents.pp --detailed-exitcodes  || [ $? -eq 2 ]
