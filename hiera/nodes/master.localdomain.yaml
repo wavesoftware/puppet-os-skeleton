@@ -4,12 +4,12 @@ puppetdb::listen_address: 0.0.0.0
 classes:
   - 'puppetdb'
   - 'puppetdb::master::config'
-  - 'common::puppetdb::reports'
-  - 'puppetboard'
-  - 'puppetboard::apache::vhost'
+  - 'puppetexplorer'
   - 'apache'
   - 'apache::mod::wsgi'
 
+puppetdb::master::config::manage_report_processor: true
+puppetdb::master::config::enable_reports: true
 puppetboard::manage_virtualenv: true
 puppetboard::apache::vhost::vhost_name: "%{fqdn}"
 puppetboard::apache::vhost::port: 80

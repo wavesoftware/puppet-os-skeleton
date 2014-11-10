@@ -1,7 +1,7 @@
-Facter.add(:puppet_agent_lock) do
+Facter.add(:puppet_agent_locked) do
   setcode do
     vardir = Facter.value :puppet_vardir
     lock = "#{vardir}/state/agent_disabled.lock"
-    not File.exists? lock
+    File.exists? lock
   end
 end

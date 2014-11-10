@@ -1,6 +1,6 @@
 #!/usr/bin/env puppet
 
-class profile::master::setup {
+class profile::master::provision {
 
   if ! $::repopath {
     fail('Set $::repopath facter value!')
@@ -80,4 +80,4 @@ class profile::master::setup {
     target => '/etc/puppet/hiera.yaml',
   }
 }
-include profile::master::setup
+include profile::master::provision

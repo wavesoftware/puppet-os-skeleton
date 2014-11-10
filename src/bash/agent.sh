@@ -5,10 +5,8 @@ export FACTER_repopath="$1"
 set -e
 set -x
 
-source ${FACTER_repopath}/src/bash/repo.sh
-
-if ! dpkg -l | grep -q 'ii  puppet '; then
+if ! dpkg -l | grep 'ii  puppet ' | grep -q '3.7.'; then
+	source ${FACTER_repopath}/src/bash/repo.sh
 	apt-get install -y puppet
+	source ${FACTER_repopath}/src/bash/fix-puppet.sh
 fi
-
-source ${FACTER_repopath}/src/bash/fix-puppet.sh
