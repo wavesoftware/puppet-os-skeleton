@@ -1,5 +1,8 @@
 class common::packages {
-	package { ['htop', 'sysstat', 'tcpdump', 'iotop']:
+
+	$packages = hiera_array('packages')
+
+	package { $packages:
 		ensure => 'installed',
 	}
 }
