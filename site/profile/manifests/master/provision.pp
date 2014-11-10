@@ -33,7 +33,12 @@ class profile::master::setup {
   }
 
   exec { 'r10k deploy environment -p -v':
+    alias       => 'r10k',
     refreshonly => true,
+    before      => [
+      Class['puppetdb'],
+      Class['puppetdb::master::config'],
+    ],
     subscribe   => [
       Exec['check-input-repo'],
       File['/etc/r10k.yaml'],
@@ -81,3 +86,5 @@ class profile::master::setup {
   }
 }
 include profile::master::setup
+include puppetdb 
+include puppetdb::master::config
