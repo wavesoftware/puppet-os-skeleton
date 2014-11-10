@@ -13,3 +13,4 @@ if ! dpkg -l | grep -q 'ii  puppetmaster'; then
 fi
 
 puppet apply ${FACTER_repopath}/site/profile/manifests/master/provision.pp --detailed-exitcodes  || [ $? -eq 2 ]
+puppet apply ${FACTER_repopath}/site/profile/manifests/master/provision.pp --environment $environment --detailed-exitcodes  || [ $? -eq 2 ]

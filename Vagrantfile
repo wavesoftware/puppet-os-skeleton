@@ -11,14 +11,20 @@ Vagrant.configure("2") do |config|
   args        = [ '/vagrant', environment ]
 
   config.vm.network "private_network", type: "dhcp"
+  config.landrush.enabled = true
 
   config.vm.define "master" do |master|
     master.vm.provision "shell", path: "src/bash/master.sh", args: args
     master.vm.hostname = masterhost
 
+    master.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
     master.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost
-      puppet.options = "--environment '#{environment}' #{debug_flag}"
+      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
     end
   end
 
@@ -28,7 +34,7 @@ Vagrant.configure("2") do |config|
 
     slave.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost
-      puppet.options = "--environment '#{environment}' #{debug_flag}"
+      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
     end
   end
 
