@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "master" do |master|
     master.vm.provision "shell", path: "src/bash/master.sh", args: args
-    master.vm.hostname = $masterhost
+    master.vm.hostname = masterhost
 
     master.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost

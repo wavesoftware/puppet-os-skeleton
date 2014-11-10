@@ -1,8 +1,8 @@
 {
-  "name": "wavesoftware-common",
+  "name": "wavesoftware-profile",
   "version": "0.1.0",
   "author": "wavesoftware",
-  "summary": "Common Site Module by WaveSoftware",
+  "summary": "Profiles Module by WaveSoftware",
   "license": "Apache 2.0",
   "source": "",
   "project_page": "",
@@ -34,7 +34,7 @@
       "version_requirement": ">=2.7.20 <4.0.0"
     }
   ],
-  "description": "Common Site Module by WaveSoftware",
+  "description": "Profiles Module by WaveSoftware",
   "dependencies": [
   
   ]

@@ -35,10 +35,6 @@ class profile::master::setup {
   exec { 'r10k deploy environment -p -v':
     alias       => 'r10k',
     refreshonly => true,
-    before      => [
-      Class['puppetdb'],
-      Class['puppetdb::master::config'],
-    ],
     subscribe   => [
       Exec['check-input-repo'],
       File['/etc/r10k.yaml'],
@@ -57,8 +53,7 @@ class profile::master::setup {
       "set agent/server ${::fqdn}",
       'set agent/classfile $vardir/classes.txt',
       'set agent/localconfig $vardir/localconfig',
-      'set main/modulepath /etc/puppet/environments/$environment/modules:/etc/puppet/environments/$environment/site',
-      'set main/manifest /etc/puppet/environments/$environment/site.pp',
+      'rm main/templatedir',
     ],
   }
 
@@ -86,5 +81,3 @@ class profile::master::setup {
   }
 }
 include profile::master::setup
-include puppetdb 
-include puppetdb::master::config

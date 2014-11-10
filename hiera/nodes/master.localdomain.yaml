@@ -1,3 +1,6 @@
 ---
 
 puppetdb::listen_address: 0.0.0.0
+classes:
+  - 'puppetdb'
+  - 'puppetdb::master::config'
