@@ -11,9 +11,10 @@ $global[:repopath]    = '/vagrant'
 
 Vagrant.configure("2") do |config|
   
-  config.vm.box = "ubuntu/trusty64"
-
-  config.vm.network "private_network", type: "dhcp"
+  # Sets box to minimal Ubuntu Server 14.04.1 x86_64 
+  # Box is clean, without configuration management
+  # Box is valid for virtualbox and libvirt providers
+  config.vm.box = "wavesoftware/trusty64-nocm"
 
   # Enable landrush local DNS server
   config.landrush.enabled = true

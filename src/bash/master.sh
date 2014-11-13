@@ -11,7 +11,7 @@ export FACTER_puppetmaster="$3"
 if ! dpkg -l | grep -q 'ii  puppetmaster'; then
 	# Install puppet master - open source version
 	source ${FACTER_repopath}/src/bash/internal/repo.sh
-	apt-get install -y puppetmaster ruby
+	apt-get install -y puppetmaster puppet
 fi
 
 # Fix for puppet agent lock, deprecated templatedir and setting puppet master address
