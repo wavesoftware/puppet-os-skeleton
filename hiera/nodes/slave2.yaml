@@ -1,5 +1,6 @@
 ---
 
+# This file is example how to add specific hiera settings on node level
 packages:
  - cowsay
  - sl

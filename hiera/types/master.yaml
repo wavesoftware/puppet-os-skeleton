@@ -1,5 +1,5 @@
 ---
-
+# This file is valid for puppet master
 classes:
   - 'puppetdb'
   - 'puppetdb::master::config'

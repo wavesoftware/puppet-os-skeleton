@@ -9,7 +9,7 @@ srcdir='/usr/src'
 debpath="${srcdir}/${debfile}"
 
 if [ ! -f $debpath ]; then
-	wget https://apt.puppetlabs.com/${debfile} -O ${debpath}
+	stdbuf -oL -eL curl https://apt.puppetlabs.com/${debfile} -o ${debpath} 2>&1
 fi
 if ! dpkg -l | grep -q 'ii  puppetlabs-release'; then
 	dpkg -i $debpath && apt-get update
