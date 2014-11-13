@@ -1,9 +1,14 @@
 ---
+# Used backends
 :backends:
   - yaml
+
+# Hierarchy - most important are on top (overwrites those bellow)
 :hierarchy:
-  - "nodes/%{fqdn}"
+  - "nodes/%{hostname}"
+  - "types/%{guess_type}"
   - common
 
+# Yaml backend configuration
 :yaml:
    :datadir: /etc/puppet/environments/%{environment}/hiera

@@ -1,3 +1,4 @@
+# Use bash prompt - scmprompt supporting git and mercurial
 class common::prompt {
 	vcsrepo { "/var/lib/scmprompt":
 		ensure   => 'present',
