@@ -4,85 +4,76 @@ Vagrant.configure("2") do |config|
   
   config.vm.box = "ubuntu/trusty64"
 
-  masterhost  = "master.localdomain"
+  domain      = 'vagrant.dev'
+  masterhost  = "#{:master}.#{domain}"
   branch      = `git rev-parse --abbrev-ref HEAD`.chop()
   environment = branch.gsub /[^0-9A-Za-z]/, '_'
   debug_flag  = unless ENV['PUPPET_VERBOSE'].nil? then '--debug --trace' else '' end
   args        = [ '/vagrant', environment, masterhost ]
 
   config.vm.network "private_network", type: "dhcp"
+
+  # Enable landrush local DNS server
   config.landrush.enabled = true
 
-  config.vm.define "master" do |master|
+  # Puppet master node configuration
+  config.vm.define :master do |master|
+    # Initial setup of puppet master and repo sync using r10k
     master.vm.provision "shell", path: "src/bash/master.sh", args: args
-    master.vm.provision "shell", path: "src/bash/master-autosign.sh"
+    # Development only! Autosigning of nodes.
+    master.vm.provision "shell", path: "src/bash/internal/master-autosign.sh" 
+    # Setting a hostname
     master.vm.hostname = masterhost
 
+    # Provider configuration
     master.vm.provider "virtualbox" do |v|
       v.memory = 1024
       v.cpus = 1
     end
 
+    # A puppet server provision
     master.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost
       puppet.options = "-t --environment '#{environment}' #{debug_flag}"
     end
   end
 
-  config.vm.define "slave1" do |slave|
+  # Puppet node configuration
+  name = :slave1
+  config.vm.define name do |slave|
+    # Initial setup of puppet node
     slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
-    slave.vm.hostname = "slave1.localdomain"
+    # Setting a host name
+    slave.vm.hostname = "#{name}.#{domain}"
 
+    # A puppet server provision
     slave.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost
       puppet.options = "-t --environment '#{environment}' #{debug_flag}"
     end
 
+    # Provider configuration
     slave.vm.provider "virtualbox" do |v|
       v.memory = 256
       v.cpus = 1
     end
   end
 
-  config.vm.define "slave2" do |slave|
+  name = :slave2
+  # Puppet node configuration
+  config.vm.define name do |slave|
+    # Initial setup of puppet node
     slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
-    slave.vm.hostname = "slave2.localdomain"
+    # Setting a host name
+    slave.vm.hostname = "#{name}.#{domain}"
 
+    # A puppet server provision
     slave.vm.provision "puppet_server" do |puppet|
       puppet.puppet_server = masterhost
       puppet.options = "-t --environment '#{environment}' #{debug_flag}"
     end
 
-    slave.vm.provider "virtualbox" do |v|
-      v.memory = 256
-      v.cpus = 1
-    end
-  end
-
-  config.vm.define "slave3" do |slave|
-    slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
-    slave.vm.hostname = "slave3.localdomain"
-
-    slave.vm.provision "puppet_server" do |puppet|
-      puppet.puppet_server = masterhost
-      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
-    end
-
-    slave.vm.provider "virtualbox" do |v|
-      v.memory = 256
-      v.cpus = 1
-    end
-  end
-
-  config.vm.define "slave4" do |slave|
-    slave.vm.provision "shell", path: "src/bash/agent.sh", args: args
-    slave.vm.hostname = "slave4.localdomain"
-
-    slave.vm.provision "puppet_server" do |puppet|
-      puppet.puppet_server = masterhost
-      puppet.options = "-t --environment '#{environment}' #{debug_flag}"
-    end
-
+    # Provider configuration
     slave.vm.provider "virtualbox" do |v|
       v.memory = 256
       v.cpus = 1

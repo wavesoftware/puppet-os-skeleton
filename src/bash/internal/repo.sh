@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Basic script that add apt.puppetlabs.com repo to machine.
+
 codename=`lsb_release -c | awk '{print $2}'`
 deb="puppetlabs-release-${codename}"
 debfile="${deb}.deb"

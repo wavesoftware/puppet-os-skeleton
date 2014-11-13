@@ -1,3 +1,4 @@
+# Exchange hostnames with PuppetDB
 class common::hosts::exchange {
 	
 	@@host { $::fqdn:
