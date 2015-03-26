@@ -4,9 +4,9 @@
   "author": "wavesoftware",
   "summary": "Common Site Module by WaveSoftware",
   "license": "Apache 2.0",
-  "source": "",
-  "project_page": "",
-  "issues_url": "",
+  "source": "git@github.com:wavesoftware/puppet-os-skeleton.git",
+  "project_page": "https://github.com/wavesoftware/puppet-os-skeleton",
+  "issues_url": "https://github.com/wavesoftware/puppet-os-skeleton/issues",
   "operatingsystem_support": [
     {
       "operatingsystem": "Debian",
@@ -34,8 +34,7 @@
       "version_requirement": ">=2.7.20 <4.0.0"
     }
   ],
-  "description": "Common Site Module by WaveSoftware",
   "dependencies": [
-  
+  	{"name": "puppetlabs/vcsrepo", "version_requirement": ">=1.2.0"}
   ]
 }

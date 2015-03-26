@@ -24,23 +24,46 @@ file { '/etc/r10k.yaml':
   source  => "${::repopath}/src/r10k.yaml",
 }
 
-exec { 'git add -A && git write-tree > /etc/puppet/repo.hash':
-  alias  => 'check-input-repo',
-  cwd    => $::repopath,
-  onlyif => '[ ! -f /etc/puppet/repo.hash ] || test `git add -A && git write-tree` != `cat /etc/puppet/repo.hash`'
+exec { 'repo-has-changed':
+  command   => 'echo -n',
+  logoutput => false,
+  cwd       => $::repopath,
+  onlyif    => '[ ! -f /var/spool/deployrepo.hash ] || test `git write-tree` != `cat /var/spool/deployrepo.hash`',
 }
 
-exec { 'r10k deploy environment -p -v':
-  alias       => 'r10k',
+exec { 'r10k deploy':
+  command     => 'r10k deploy environment -v && git write-tree > /var/spool/deployrepo.hash',
+  cwd         => $::repopath,
   refreshonly => true,
-  subscribe   => [
-    Exec['check-input-repo'],
+  require     => [
     File['/etc/r10k.yaml'],
     Package['r10k'],
     Augeas['/etc/puppet/puppet.conf'],
     File['/etc/puppet/hiera.yaml'],
     File['/etc/hiera.yaml'],
   ],
+  subscribe   => Exec['repo-has-changed'],
+}
+
+exec { 'puppetfile-has-changed':
+  command   => 'echo -n',
+  logoutput => false,
+  cwd       => $::repopath,
+  unless    => 'md5sum -c /var/spool/puppetfile.hash',
+}
+
+exec { 'r10k deploy with puppet modules':
+  command     => 'r10k deploy environment -p -v && md5sum Puppetfile > /var/spool/puppetfile.hash',
+  cwd         => $::repopath,
+  refreshonly => true,
+  require     => [
+    File['/etc/r10k.yaml'],
+    Package['r10k'],
+    Augeas['/etc/puppet/puppet.conf'],
+    File['/etc/puppet/hiera.yaml'],
+    File['/etc/hiera.yaml'],
+  ],
+  subscribe   => Exec['puppetfile-has-changed'],
 }
 
 augeas { '/etc/puppet/puppet.conf':
