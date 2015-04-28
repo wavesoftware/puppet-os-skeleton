@@ -4,7 +4,6 @@ class profile::base {
   include common::filebucket
   include common::puppet::agent
   include common::packages
-  include common::prompt
-  include common::stages
+  include stdlib::stages
   include common::environment
 }

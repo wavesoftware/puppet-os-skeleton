@@ -1,7 +1,7 @@
 # Exchange hostnames with PuppetDB
 class common::hosts::exchange {
 
-	include common::stages
+	include stdlib::stages
 
 	class selfhost {
 		if $::fqdn_ipaddress != unset {
@@ -14,7 +14,7 @@ class common::hosts::exchange {
 	}
 
 	class { 'selfhost': 
-		stage   => 'before',
+		stage   => 'setup',
 	}
 
 	Host <<| tag == 'hosts-exchange' |>>

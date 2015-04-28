@@ -6,5 +6,5 @@
   # This will clone the git repository and instantiate an environment per
   # branch in /etc/puppet/environments
   :vagrant:
-    remote: '/vagrant'
+    remote: '/opt/cm-repo'
     basedir: '/etc/puppet/environments'

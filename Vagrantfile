@@ -7,7 +7,7 @@ $global[:domain]      = 'vagrant.dev'
 $global[:masterhost]  = "#{:master}.#{$global[:domain]}"
 $global[:environment] = `git rev-parse --abbrev-ref HEAD`.chop().gsub /[^0-9A-Za-z]/, '_'
 $global[:debug_flag]  = unless ENV['PUPPET_VERBOSE'].nil? then '--debug --trace' else '' end
-$global[:repopath]    = '/vagrant'
+$global[:repopath]    = '/opt/cm-repo'
 
 Vagrant.configure("2") do |config|
   
@@ -15,6 +15,8 @@ Vagrant.configure("2") do |config|
   # Box is clean, without configuration management
   # Box is valid for virtualbox and libvirt providers
   config.vm.box = "wavesoftware/trusty64-nocm"
+
+  config.vm.synced_folder "./", $global[:repopath]
 
   # Enable landrush local DNS server
   config.landrush.enabled = true
